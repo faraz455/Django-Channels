@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<head> 
+    <title>Index Page</title>
+</head>
+
+<body>
+    <script>
+        var ws = new WebSocket('ws://127.0.0.1:8000/ws/sc/')
+        ws.onopen = function() {
+            console.log('Web socket Connection')
+            ws.send('hi, This is message from client..')
+        }
+        ws.onmessage = function(event) {
+            console.log('Messaged recieved', event)
+        }
+        ws.onerror = function(event) {
+            console.log('Error Occur', event)
+        }
+        ws.close = function(event){
+            console.log('connection closed', event)
+        }
+    </script>
+
+</body>
+
+</html>
