@@ -9,7 +9,8 @@
         ws.onmessage = function(event) {
             console.log('Messaged recieved', event)
             const data = JSON.parse(event.data)
-            document.querySelector('#chat-log').value += (data.user + ': ' + data.msg + '\n')
+            if (data.msg != '')
+            {document.querySelector('#chat-log').value += (data.user + ': ' + data.msg + '\n')}
         }
         ws.onerror = function(event) {
             console.log('Error Occur', event)
@@ -35,12 +36,22 @@
 </head>
 
 <body>
-    <h1>Index Page</h1>
-    <h2 id='dc'></h2>
-    <textarea name="" id="chat-log" cols="100" rows="10"></textarea><br/><br/>
-    User: <input type="text" id="userName" size='100'><br/><br/>
-    Message: <input type="text" id="chat-message-input" size='100'><br/><br/>
-    <input type="button" value="send" id="chat-message-submit" onclick="sendMessage()">
+    <div style="padding: 20px;">
+        <h1>Group Chat</h1>
+        <h2 id='dc'></h2>
+        <textarea name="" id="chat-log" cols="100" rows="10" readonly></textarea><br/><br/><br/>
+        <table>
+            <tr>
+                <td>User:</td>
+                <td><input type="text" id="userName" style="margin-left: 20px;" size='89'><br/><br/></td>
+            </tr>
+            <tr>
+                <td>Message:</td>
+                <td><input type="text" id="chat-message-input" style="margin-left: 20px;" size='89'><br/><br/></td>
+            </tr>
+        </table>
+        <input type="button" value="Send Message" id="chat-message-submit" style="padding:8px; margin-left: 720px;" onclick="sendMessage()">
+    </div>
 </body>
 
 </html>

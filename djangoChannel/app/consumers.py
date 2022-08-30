@@ -35,10 +35,11 @@ class MySyncConsumer(SyncConsumer):
             )
     # Send the message to group
     def chat_message(self, event):
-        self.send({
-            'type': 'websocket.send',
-            'text': event['message']
-        })
+        if event['message'] != '':
+            self.send({
+                'type': 'websocket.send',
+                'text': event['message']
+            })
 
     # When the websockets get disconnected
     def websocket_disconnect(self,event):
