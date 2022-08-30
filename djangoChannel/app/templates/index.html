@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <head> 
     <title>Index Page</title>
-</head>
-
-<body>
     <script>
         var ws = new WebSocket('ws://127.0.0.1:8000/ws/sc/')
         ws.onopen = function() {
@@ -12,6 +9,10 @@
         }
         ws.onmessage = function(event) {
             console.log('Messaged recieved', event)
+            // var data = JSON.parse(event.data)
+            // document.getElementById('dc').innerText = data.count
+            const data = JSON.parse(event.data)
+            document.querySelector('#chat-log').value += (data.msg + '\n')
         }
         ws.onerror = function(event) {
             console.log('Error Occur', event)
@@ -19,8 +20,25 @@
         ws.close = function(event){
             console.log('connection closed', event)
         }
-    </script>
 
+        function sendMessage(){
+            const messageInput = document.getElementById('chat-message-input')
+            const message = messageInput.value
+            ws.send(JSON.stringify({
+                    'msg' : message
+                    }))
+            messageInput.value = ''
+            }
+
+    </script>
+</head>
+
+<body>
+    <h1>Index Page</h1>
+    <h2 id='dc'></h2>
+    <textarea name="" id="chat-log" cols="100" rows="10"></textarea><br/><br/>
+    <input type="text" id="chat-message-input" size='100'><br/><br/>
+    <input type="button" value="send" id="chat-message-submit" onclick="sendMessage()">
 </body>
 
 </html>
