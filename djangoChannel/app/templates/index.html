@@ -5,14 +5,11 @@
         var ws = new WebSocket('ws://127.0.0.1:8000/ws/sc/')
         ws.onopen = function() {
             console.log('Web socket Connection')
-            ws.send('hi, This is message from client..')
         }
         ws.onmessage = function(event) {
             console.log('Messaged recieved', event)
-            // var data = JSON.parse(event.data)
-            // document.getElementById('dc').innerText = data.count
             const data = JSON.parse(event.data)
-            document.querySelector('#chat-log').value += (data.msg + '\n')
+            document.querySelector('#chat-log').value += (data.user + ': ' + data.msg + '\n')
         }
         ws.onerror = function(event) {
             console.log('Error Occur', event)
@@ -21,11 +18,15 @@
             console.log('connection closed', event)
         }
 
+        // Sends data of user and message to server
         function sendMessage(){
             const messageInput = document.getElementById('chat-message-input')
             const message = messageInput.value
+            const userName = document.getElementById('userName')
+            const user = userName.value
             ws.send(JSON.stringify({
-                    'msg' : message
+                    'msg' : message, 
+                    'user' :user
                     }))
             messageInput.value = ''
             }
@@ -37,7 +38,8 @@
     <h1>Index Page</h1>
     <h2 id='dc'></h2>
     <textarea name="" id="chat-log" cols="100" rows="10"></textarea><br/><br/>
-    <input type="text" id="chat-message-input" size='100'><br/><br/>
+    User: <input type="text" id="userName" size='100'><br/><br/>
+    Message: <input type="text" id="chat-message-input" size='100'><br/><br/>
     <input type="button" value="send" id="chat-message-submit" onclick="sendMessage()">
 </body>
 

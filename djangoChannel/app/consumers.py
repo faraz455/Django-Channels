@@ -8,26 +8,24 @@ import json
 
 class MySyncConsumer(SyncConsumer):
 
+    # When websocket connects this functions get called
     def websocket_connect(self, event):
         print('Websocket connect...', event)
-
+        # This first convert asyn to sync function and 
+        # Then add the channel layer to the group
         async_to_sync (self.channel_layer.group_add)(
             'channel_group',
             self.channel_name
             )
-
+        # Accepts the connection
         self.send({
             'type': 'websocket.accept'
         })
 
+    # When websocket recieves data from the front end
     def websocket_receive(self,event):
         print('Message recieved...', event['text'])
-        # for i in range(50):
-        #     self.send({
-        #         'type' : 'websocket.send',
-        #         'text' : json.dumps({'count': i})
-        #     })
-        #     time.sleep(1)
+        # Send message and user from front end to the group of channels
         async_to_sync (self.channel_layer.group_send)(
             'channel_group', 
                 {
@@ -35,15 +33,16 @@ class MySyncConsumer(SyncConsumer):
                 'message': event['text']
                 }
             )
+    # Send the message to group
     def chat_message(self, event):
         self.send({
             'type': 'websocket.send',
             'text': event['message']
         })
 
+    # When the websockets get disconnected
     def websocket_disconnect(self,event):
         print('Websocket disconnect...', event)
-
         async_to_sync (self.channel_layer.group_discard)(
             'channel_group', 
             self.channel_name

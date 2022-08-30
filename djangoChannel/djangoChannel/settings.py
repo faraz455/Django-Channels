@@ -101,6 +101,8 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+# start redis server 
+# redis-server
 
 CHANNEL_LAYERS = {
     "default": {
