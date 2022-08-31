@@ -3,6 +3,7 @@
     <title>Index Page</title>
     {{groupName|json_script:"group-name"}}
     <script>
+        var flag = 1
         const groupName = JSON.parse(document.getElementById('group-name').textContent)
         console.log(groupName)
         var ws = new WebSocket('ws://127.0.0.1:8000/ws/sc/' + groupName +'/')
@@ -12,8 +13,12 @@
         ws.onmessage = function(event) {
             console.log('Messaged recieved', event)
             const data = JSON.parse(event.data)
-            if (data.msg != '')
-            {document.querySelector('#chat-log').value += (data.user + ': ' + data.msg + '\n')}
+
+            if (data.msg != '' && flag)
+                {document.querySelector('#chat-log').value += ('\t' + data.user + ': ' + data.msg + '\n\n');
+                flag=0}
+            else
+                {document.querySelector('#chat-log').value += ('\t\t' + data.user + ': ' + data.msg + '\n\n');}
         }
         ws.onerror = function(event) {
             console.log('Error Occur', event)
@@ -42,7 +47,12 @@
     <div style="padding: 20px;">
         <h1>Group Chat - {{groupName}}</h1>
         <h2 id='dc'></h2>
-        <textarea name="" id="chat-log" cols="100" rows="10" readonly></textarea><br/><br/><br/>
+        <textarea name="" id="chat-log" cols="100" rows="10" readonly>
+            {% for chat in chats %}
+                {{chat}}
+            {% endfor %}
+
+        </textarea><br/><br/><br/>
         <table>
             <tr>
                 <td>User:</td>
