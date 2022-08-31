@@ -7,14 +7,15 @@ import asyncio
 import json
 
 class MySyncConsumer(SyncConsumer):
-
+    channel_group = ''
     # When websocket connects this functions get called
     def websocket_connect(self, event):
         print('Websocket connect...', event)
         # This first convert asyn to sync function and 
         # Then add the channel layer to the group
+        self.channel_group = self.scope['url_route']['kwargs']['group_name']
         async_to_sync (self.channel_layer.group_add)(
-            'channel_group',
+            self.channel_group,
             self.channel_name
             )
         # Accepts the connection
@@ -27,7 +28,7 @@ class MySyncConsumer(SyncConsumer):
         print('Message recieved...', event['text'])
         # Send message and user from front end to the group of channels
         async_to_sync (self.channel_layer.group_send)(
-            'channel_group', 
+            self.channel_group, 
                 {
                 'type': 'chat.message',
                 'message': event['text']
@@ -45,7 +46,7 @@ class MySyncConsumer(SyncConsumer):
     def websocket_disconnect(self,event):
         print('Websocket disconnect...', event)
         async_to_sync (self.channel_layer.group_discard)(
-            'channel_group', 
+            self.channel_group, 
             self.channel_name
             )
         raise StopConsumer()
